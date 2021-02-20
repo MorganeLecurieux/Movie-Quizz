@@ -1,10 +1,16 @@
 import React from 'react'
 import { Starter } from '@/components/Starter'
+import { Game } from '@/components/Game'
+import { ApolloProvider } from '@apollo/client'
+import { client } from '@/core/apolloClient'
 
 const App = () => {
   return (
     <div>
-      <Starter />
+      <ApolloProvider client={client}>
+        <Starter />
+        <Game />
+      </ApolloProvider>
     </div>
   )
 }
