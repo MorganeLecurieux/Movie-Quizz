@@ -1,19 +1,19 @@
 import React from 'react'
 import { Starter } from '@/components/Starter'
 import { Game } from '@/components/Game'
-import { ApolloProvider } from '@apollo/client'
-import { client } from '@/core/apolloClient'
-
-import { GlobalStyle } from '@/style/globalStyle'
+import { Switch, Route } from 'react-router-dom'
 
 const App = () => {
   return (
     <div>
-      <ApolloProvider client={client}>
-        <GlobalStyle />
-        <Starter />
-        <Game />
-      </ApolloProvider>
+      <Switch>
+        <Route exact path="/">
+          <Starter />
+        </Route>
+        <Route path="/play">
+          <Game />
+        </Route>
+      </Switch>
     </div>
   )
 }
