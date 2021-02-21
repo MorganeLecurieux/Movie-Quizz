@@ -14,10 +14,6 @@ module.exports = {
     'prettier',
     'prettier/react',
   ],
-  ecmaFeature: {
-    modules: true,
-    spread: true,
-  },
   parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
