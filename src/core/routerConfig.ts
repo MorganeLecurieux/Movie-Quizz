@@ -1,11 +1,12 @@
 import { ComponentType, lazy } from 'react'
-import { Starter } from '@/pages/Starter'
-import { Play } from '@/pages/Play'
-import { HighScores } from '@/pages/HighScores'
 
 export const ROUTE_HOME = '/'
 export const ROUTE_PLAY = '/play'
 export const ROUTE_HIGH_SCORES = '/high-scores'
+
+const Starter = lazy(() => import('@/pages/Starter'))
+const Play = lazy(() => import('@/pages/Play'))
+const HighScores = lazy(() => import('@/pages/HighScores'))
 
 import { scoreVar } from '@/core/apolloClient'
 

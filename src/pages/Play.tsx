@@ -15,7 +15,7 @@ import { colors, spacers } from '@/style/variables'
 const GET_ACTORS = gql`
   query people {
     people {
-      popular(first: 50) {
+      popular(first: 100) {
         edges {
           node {
             name
@@ -37,7 +37,7 @@ const GET_ACTORS = gql`
 const GET_MOVIE = gql`
   query movies {
     movies {
-      popular(first: 50) {
+      popular(first: 100) {
         edges {
           cursor
           node {
@@ -74,8 +74,7 @@ function shuffleArray(array: boolean[]) {
 // Used to make sure a good repartition is made between true and false answers
 const REPARTITION_ARRAY = [true, true, true, true, true, false, false, false, false, false]
 
-// history.push
-export const Play = () => {
+const Play = () => {
   let history = useHistory()
   const { data, loading } = useQuery(GET_ACTORS)
   const { data: movieData } = useQuery(GET_MOVIE)
@@ -175,6 +174,8 @@ export const Play = () => {
     </StyledCard>
   )
 }
+
+export default Play
 
 const StyledCard = styled(Card)`
   display: flex;

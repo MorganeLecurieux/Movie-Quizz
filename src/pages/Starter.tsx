@@ -7,7 +7,7 @@ import { ROUTE_PLAY } from '@/core/routerConfig'
 import { useI18nContext } from '@/core/I18nContext'
 import { colors, spacers } from '@/style/variables'
 
-export const Starter = () => {
+const Starter = () => {
   const { translate } = useI18nContext()
 
   return (
@@ -20,6 +20,8 @@ export const Starter = () => {
     </StyledCard>
   )
 }
+
+export default Starter
 
 const StyledCard = styled(Card)`
   display: flex;

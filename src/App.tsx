@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Suspense } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -26,18 +26,20 @@ const App = () => {
           </button>
         </LocaleButtonsContainer>
 
-        <Switch>
-          {routes.map((route, i) => (
-            <Route
-              key={i}
-              {...route}
-              render={() => {
-                !!route.onEnter && route.onEnter()
-                return <route.components />
-              }}
-            />
-          ))}
-        </Switch>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Switch>
+            {routes.map((route, i) => (
+              <Route
+                key={i}
+                {...route}
+                render={() => {
+                  !!route.onEnter && route.onEnter()
+                  return <route.components />
+                }}
+              />
+            ))}
+          </Switch>
+        </Suspense>
       </I18nProvider>
     </Container>
   )

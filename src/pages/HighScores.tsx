@@ -23,7 +23,7 @@ const GET_LAST_GAME_INFOS = gql`
   }
 `
 
-export const HighScores = () => {
+const HighScores = () => {
   const { data } = useQuery(GET_LAST_GAME_INFOS)
   const [userName, setUserName] = useState('')
   const [canAddHightScore, setCanAddHightScore] = useState(true)
@@ -101,6 +101,8 @@ export const HighScores = () => {
     </StyledCard>
   )
 }
+
+export default HighScores
 
 const StyledCard = styled(Card)`
   display: flex;
