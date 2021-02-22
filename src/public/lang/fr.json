@@ -1,0 +1,17 @@
+{
+  "page:starter:title": "Prêt à jouer ?",
+  "page:starter:subtitle": "Soyez le meilleur pour trouver le jumelage parfait entre les acteurs et les films. C'est parti !",
+  "page:starter:button": "Jouer",
+  "page:high-scores:title": "Perdu",
+  "page:high-scores:current:time": "Temps écoulé: ",
+  "page:high-scores:current:score": "Bonne réponse:| Bonne réponses: ",
+  "page:high-scores:button:retry": "Réessayer",
+  "page:high-scores:title:high-scores": "Meilleurs scores",
+  "page:high-scores:title:high-scores:score": "{{score}} bonne réponse | {{score}} bonne réponses",
+  "page:high-scores:title:high-scores:none": "Aucun score pour le moment",
+  "page:high-scores:title:high-scores:add:placeholder": "Ajouter votre score",
+  "page:high-scores:title:high-scores:add:button": "Ajouter",
+  "page:play:question": "{{actor}} a-t-il.elle joué dans {{movie}} ?",
+  "page:play:button:yes": "Oui",
+  "page:play:button:no": "Non"
+}

@@ -71,6 +71,7 @@ function shuffleArray(array: boolean[]) {
   return array
 }
 
+// Used to make sure a good repartition is made between true and false answers
 const REPARTITION_ARRAY = [true, true, true, true, true, false, false, false, false, false]
 
 // history.push
@@ -163,10 +164,14 @@ export const Play = () => {
     <StyledCard>
       <SameLine>
         <Timer />
-        <div>✅ {scoreVar()} </div>
+        <div>
+          <span role="img" aria-label="score">
+            ✅{' '}
+          </span>
+          {scoreVar()}
+        </div>
       </SameLine>
       {loading ? <Loader /> : getQuestion()}
-      {/* <Link to="high-scores">High scores</Link> */}
     </StyledCard>
   )
 }

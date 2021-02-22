@@ -4,18 +4,18 @@ import { Card } from '@/components/generics'
 import { Link } from 'react-router-dom'
 
 import { ROUTE_PLAY } from '@/core/routerConfig'
+import { useI18nContext } from '@/core/I18nContext'
 import { colors, spacers } from '@/style/variables'
 
 export const Starter = () => {
+  const { translate } = useI18nContext()
+
   return (
     <StyledCard>
-      <h1>Ready to play ?</h1>
-      <p>
-        Be the best in finding the perfect pairing between actors and movies. Press play and let’s
-        have some fun!
-      </p>
+      <h1>{translate('page:starter:title')}</h1>
+      <p>{translate('page:starter:subtitle')}</p>
       <StyledLink to={ROUTE_PLAY}>
-        <button>Press play and let&rsquo;s go</button>
+        <button>{translate('page:starter:button')}</button>
       </StyledLink>
     </StyledCard>
   )

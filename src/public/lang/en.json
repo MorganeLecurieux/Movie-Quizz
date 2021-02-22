@@ -1,0 +1,17 @@
+{
+  "page:starter:title": "Ready to play ?",
+  "page:starter:subtitle": "Be the best in finding the perfect pairing between actors and movies. Press play and let’s have some fun!",
+  "page:starter:button": "Press play and let&rsquo;s go",
+  "page:high-scores:title": "Game over",
+  "page:high-scores:current:time": "Time spent in the game: ",
+  "page:high-scores:current:score": "Good answer: | Good answers: ",
+  "page:high-scores:button:retry": "Try again",
+  "page:high-scores:title:high-scores": "High Score",
+  "page:high-scores:title:high-scores:score": "{{score}} good answer | {{score}} good answers",
+  "page:high-scores:title:high-scores:none": "No high scores yet",
+  "page:high-scores:title:high-scores:add:placeholder": "Add your name to the high scores",
+  "page:high-scores:title:high-scores:add:button": "Add",
+  "page:play:question": "Did {{actor}} played in {{movie}} ?",
+  "page:play:button:yes": "Yes",
+  "page:play:button:no": "No"
+}

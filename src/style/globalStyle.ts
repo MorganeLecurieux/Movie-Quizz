@@ -51,7 +51,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   // Typography
-  h1, h2 {
+  h1 {
       color: ${colors.title};
       text-align: center;
   }
@@ -60,5 +60,10 @@ export const GlobalStyle = createGlobalStyle`
       font-weight: 700;
       font-size: 24px;
       line-height: 32px;
+
+      @media (max-width: 576px) {
+        font-size: 20px;
+        line-height: 24px;
+      }
   }
 `

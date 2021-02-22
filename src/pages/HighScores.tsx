@@ -6,9 +6,10 @@ import { Link } from 'react-router-dom'
 
 import { humanizeTime } from '@/core/timeUtils'
 
-import { colors, spacers } from '@/style/variables'
 import { ROUTE_PLAY } from '@/core/routerConfig'
 import { highScoresVar, IHighScore } from '@/core/apolloClient'
+import { useI18nContext } from '@/core/I18nContext'
+import { colors, spacers } from '@/style/variables'
 
 const GET_LAST_GAME_INFOS = gql`
   query getLastGameInfos {
@@ -26,7 +27,7 @@ export const HighScores = () => {
   const { data } = useQuery(GET_LAST_GAME_INFOS)
   const [userName, setUserName] = useState('')
   const [canAddHightScore, setCanAddHightScore] = useState(true)
-  console.log(canAddHightScore)
+  const { translate } = useI18nContext()
 
   const getSortedHighScores = () => {
     return [...data?.highScores].sort((a: IHighScore, b: IHighScore) => {
@@ -36,35 +37,39 @@ export const HighScores = () => {
 
   return (
     <StyledCard>
-      <h1>Game over</h1>
+      <h1>{translate('page:high-scores:title')}</h1>
       <Line>
-        <span>Time spent in the game</span>{' '}
-        <span>
-          <b>{humanizeTime(data?.timer)}</b>
-        </span>
+        <span>{translate('page:high-scores:current:time')}</span> <b>{humanizeTime(data?.timer)}</b>
       </Line>
       <Line>
-        <span>Good answers</span>{' '}
-        <span>
-          <b>{data?.score}</b>
-        </span>
+        <span>{translate('page:high-scores:current:score', {}, data?.score)}</span>{' '}
+        <b>{data?.score}</b>
       </Line>
       <StyledLink to={ROUTE_PLAY}>
-        <Styledbutton>Try again</Styledbutton>
+        <Styledbutton>{translate('page:high-scores:button:retry')}</Styledbutton>
       </StyledLink>
 
-      <h2>High Score</h2>
+      <h2>{translate('page:high-scores:title:high-scores')}</h2>
 
-      {data?.highScores &&
+      {data?.highScores?.length ? (
         getSortedHighScores().map((highScore: IHighScore, i: number) => {
           return (
             <HighScoreLine key={i}>
               <span>{highScore.userName}</span>
               <span>{humanizeTime(highScore.time)} </span>
-              <span>{highScore.score} good answers</span>
+              <span>
+                {translate(
+                  'page:high-scores:title:high-scores:score',
+                  { score: highScore.score },
+                  highScore.score
+                )}
+              </span>
             </HighScoreLine>
           )
-        })}
+        })
+      ) : (
+        <div>{translate('page:high-scores:title:high-scores:none')}</div>
+      )}
 
       {data?.score > 0 && canAddHightScore && (
         <Form
@@ -86,9 +91,11 @@ export const HighScores = () => {
             onChange={(e) => {
               setUserName(e.target.value)
             }}
-            placeholder="Add your name to the high scores"
+            placeholder={translate('page:high-scores:title:high-scores:add:placeholder')}
           />
-          <Styledbutton type="submit">Add</Styledbutton>
+          <Styledbutton type="submit">
+            {translate('page:high-scores:title:high-scores:add:button')}
+          </Styledbutton>
         </Form>
       )}
     </StyledCard>
@@ -123,8 +130,9 @@ const HighScoreLine = styled.div`
     flex: 3;
   }
 
-  > *:first-child {
+  > *:last-child {
     flex: 2;
+    text-align: right;
   }
 `
 
