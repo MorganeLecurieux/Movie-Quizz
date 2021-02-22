@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { colors, spacers } from '@/style/variables'
+import { ImageLoader } from '@/components/generics'
 
 interface QuestionProps {
   actor: {
@@ -24,8 +25,8 @@ export const Question = ({ actor, movie, onAnswerYes, onAnswerNo, className }: Q
         Did {actor?.name} played in {movie?.title} ?
       </h1>
       <Line>
-        <StyledImg src={actor?.profilePicture} alt={actor?.name} />
-        <StyledImg src={movie?.poster} alt={movie?.title} />
+        <ImageLoader src={actor?.profilePicture} alt={actor?.name} />
+        <ImageLoader src={movie?.poster} alt={movie?.title} />
       </Line>
       <Line>
         <YesButton onClick={onAnswerYes}>Yes</YesButton>
@@ -57,11 +58,6 @@ const Line = styled.div`
   > *:last-child {
     margin-left: ${spacers[1] / 2}px;
   }
-`
-
-const StyledImg = styled.img`
-  flex: 1;
-  border-radius: 16px;
 `
 
 const YesButton = styled.button`
