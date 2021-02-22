@@ -1,21 +1,27 @@
 import React from 'react'
-import { Starter } from '@/components/Starter'
-import { Game } from '@/components/Game'
 import { Switch, Route } from 'react-router-dom'
+import styled from 'styled-components'
+
+import { routes } from '@/core/routerConfig'
 
 const App = () => {
   return (
-    <div>
+    <Container>
       <Switch>
-        <Route exact path="/">
-          <Starter />
-        </Route>
-        <Route path="/play">
-          <Game />
-        </Route>
+        {routes.map((route, i) => (
+          <Route key={i} {...route}>
+            <route.components />
+          </Route>
+        ))}
       </Switch>
-    </div>
+    </Container>
   )
 }
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 export default App
