@@ -4,31 +4,14 @@ import styled from 'styled-components'
 import { spacers } from '@/style/variables'
 import { timerVar } from '@/core/apolloClient'
 
+import { humanizeTime } from '@/core/timeUtils'
+
 interface TimerProps {
   className?: string
 }
 
 interface TimerState {
   time: number
-}
-
-/**
- * Simple function to humanize time on format 'x hours y min z s'
- * We could use a built in library but regarding the needs in the project,
- * a super light weight function is better in my opinion
- */
-const humanizeTime = (timeInSeconds: number) => {
-  const hours = Math.floor(timeInSeconds / (60 * 60))
-  const minutes = Math.floor((timeInSeconds - hours * 60 * 60) / 60)
-  const seconds = timeInSeconds % 60
-
-  return (
-    <>
-      {hours > 0 && <span>{hours} hours</span>}
-      {minutes > 0 && <span>{minutes} min</span>}
-      {seconds > 0 && <span>{seconds} s</span>}
-    </>
-  )
 }
 
 /**
@@ -59,12 +42,6 @@ export class Timer extends Component<TimerProps, TimerState> {
   }
 
   render() {
-    return <Container className={this.props.className}>{humanizeTime(this.state.time)}</Container>
+    return <div className={this.props.className}>{humanizeTime(this.state.time)}</div>
   }
 }
-
-const Container = styled.div`
-  > *:not(:first-child) {
-    margin-left: ${spacers[1]}px;
-  }
-`
