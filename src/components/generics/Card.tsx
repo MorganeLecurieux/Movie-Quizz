@@ -18,7 +18,6 @@ const Container = styled.div`
   border-radius: 20px;
   max-width: 600px;
   width: calc(100% - ${spacers[4]}px);
-  height: calc(100vh - ${spacers[6]}px);
-  max-height: 500px;
+  max-height: calc(100vh - ${spacers[6]}px);
   box-sizing: border-box;
 `

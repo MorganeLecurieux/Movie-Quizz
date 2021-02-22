@@ -25,20 +25,29 @@ export const GlobalStyle = createGlobalStyle`
 
   button {
     border-radius: 12px;
-    height: 60px;
+    height: 50px;
     border: none;
     outline:none;
     padding: ${spacers[2]}px ${spacers[3]}px;
     color: white;
-    /* background-color: red; */
+    box-sizing: border-box;
+  }
 
-    :active{
-        /* background-color:blue; */
-    }
+  input {
+      height: 50px;
+      border-radius: 12px;
+      border: 1px solid ${colors.text};
+      padding: ${spacers[1]}px ${spacers[2]}px;
+      box-sizing: border-box;
+      font-size: 16px;
 
-    :hover {
-        /* opacity: 0.5; */
-    }
+      ::placeholder {
+        opacity: 0.5;
+      }
+      :focus {
+          outline: none;
+          border: 1px solid ${colors.main};
+      }
   }
 
   // Typography
@@ -51,6 +60,5 @@ export const GlobalStyle = createGlobalStyle`
       font-weight: 700;
       font-size: 24px;
       line-height: 32px;
-      margin: 0;
   }
 `
