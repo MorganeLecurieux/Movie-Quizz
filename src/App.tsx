@@ -9,9 +9,14 @@ const App = () => {
     <Container>
       <Switch>
         {routes.map((route, i) => (
-          <Route key={i} {...route}>
-            <route.components />
-          </Route>
+          <Route
+            key={i}
+            {...route}
+            render={() => {
+              !!route.onEnter && route.onEnter()
+              return <route.components />
+            }}
+          />
         ))}
       </Switch>
     </Container>

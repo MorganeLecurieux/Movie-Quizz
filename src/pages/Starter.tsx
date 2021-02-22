@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Card } from '@/components/generics'
 import { Link } from 'react-router-dom'
 
+import { ROUTE_PLAY } from '@/core/routerConfig'
 import { colors, spacers } from '@/style/variables'
 
 export const Starter = () => {
@@ -13,8 +14,8 @@ export const Starter = () => {
         Be the best in finding the perfect pairing between actors and movies. Press play and let’s
         have some fun!
       </p>
-      <StyledLink to="/play">
-        <button>Press play and let's go</button>
+      <StyledLink to={ROUTE_PLAY}>
+        <button>Press play and let&rsquo;s go</button>
       </StyledLink>
     </StyledCard>
   )
