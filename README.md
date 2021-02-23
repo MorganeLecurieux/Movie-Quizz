@@ -16,7 +16,7 @@ Go for `yarn lint`
 
 ### A Problem ?
 
-You might run into a CORS error that I wasn't able to manage as I don't have access to the API.
+You might run into a CORS error that I wasn't able to manage as I don't have access to the API. (And didn't really have enough time to build my own one)
 If you're using Chrome, the following command will help :
 
 `open -na Google\ Chrome --args --user-data-dir=/tmp/temporary-chrome-profile-dir --disable-web-security --disable-site-isolation-trials`

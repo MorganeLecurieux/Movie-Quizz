@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery, useReactiveVar } from '@apollo/client'
 
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
@@ -13,10 +13,15 @@ import { Question } from '@/components/Question'
 import { colors, spacers } from '@/style/variables'
 
 const GET_ACTORS = gql`
-  query people {
+  query people($after: String) {
     people {
-      popular(first: 100) {
+      popular(first: 100, after: $after) {
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
         edges {
+          cursor
           node {
             name
             profilePicture(size: W185)
@@ -38,6 +43,10 @@ const GET_MOVIE = gql`
   query movies {
     movies {
       popular(first: 100) {
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
         edges {
           cursor
           node {
@@ -71,91 +80,162 @@ function shuffleArray(array: boolean[]) {
   return array
 }
 
-// Used to make sure a good repartition is made between true and false answers
+// Used to make sure a good repartition is made between "yes" and "no" answers
 const REPARTITION_ARRAY = [true, true, true, true, true, false, false, false, false, false]
 
+interface IMovie {
+  id: string
+  title: string
+  poster: string
+}
+interface IActor {
+  name: string
+  profilePicture: string
+  knownFor: IMovie[]
+}
+
+interface IActorEdge {
+  cursor: string
+  node: IActor
+}
+
+interface IMovieEdge {
+  cursor: string
+  node: IMovie
+}
+
+/**
+ * Get random actor from list
+ * If "getMovie" === true, also get a related movie
+ */
+const getActor = (actorEdges: IActorEdge[], getMovie?: boolean) => {
+  if (!actorEdges) return {}
+  const actorsCount = actorEdges.length
+  let randomIndex = Math.floor(Math.random() * actorsCount)
+  let tryCount = 0
+  let movieTryCount = 0
+  let actor = null
+  let movie = null
+
+  // We make several check over an actor before choosing it :
+  // Actor must have a picture and we should be able to find a movie related to it if needed
+  while (!actor && tryCount < 20) {
+    const randomActor = actorEdges[randomIndex]?.node
+
+    if (!!randomActor?.profilePicture) {
+      if (!getMovie) {
+        // If there's no need to get a movie, set the actor)
+        if (!!randomActor?.profilePicture) {
+          actor = randomActor
+        }
+      } else {
+        // Find a movie in which the actor has played
+        const moviesCount = randomActor?.knownFor?.length
+        let randomMovieIndex = Math.floor(Math.random() * moviesCount)
+
+        while (!movie && movieTryCount < 20) {
+          if (randomActor?.knownFor?.length) {
+            const randomMovie = randomActor?.knownFor[randomMovieIndex]
+
+            // some actors get empty movies as they only played in TVShows, so we check that the title exists
+            if (!!randomMovie.title) {
+              movie = randomMovie
+              actor = randomActor
+            }
+            randomMovieIndex = randomMovieIndex < moviesCount - 1 ? randomMovieIndex + 1 : 0
+          }
+          movieTryCount++
+        }
+      }
+    }
+
+    randomIndex = randomIndex < actorsCount - 1 ? randomIndex + 1 : 0
+    tryCount++
+  }
+
+  return {
+    actor,
+    movie,
+  }
+}
+
+// Get a movie in which the given actor hasn't played
+const getUnrelatedMovie = (movieEdges: IMovieEdge[], actor: IActor) => {
+  if (!movieEdges) return
+  const moviesCount = movieEdges.length
+  let randomIndex = Math.floor(Math.random() * moviesCount)
+  let movie = null
+
+  let tryCount = 0
+
+  while (!movie && tryCount < 20) {
+    const randomMovie = movieEdges[randomIndex]?.node
+    const index = actor?.knownFor?.findIndex(
+      (actorsMovie: IMovie) => actorsMovie.id === randomMovie?.id
+    )
+
+    if (index === -1) {
+      movie = randomMovie
+    }
+    tryCount++
+    randomIndex = randomIndex < moviesCount - 1 ? randomIndex + 1 : 0
+  }
+  return movie
+}
+
 const Play = () => {
-  let history = useHistory()
+  const history = useHistory()
+  const score = useReactiveVar(scoreVar)
   const { data, loading } = useQuery(GET_ACTORS)
   const { data: movieData } = useQuery(GET_MOVIE)
-  const answerTemplate = useRef(shuffleArray(REPARTITION_ARRAY))
+  const answerTemplate = useRef(shuffleArray(REPARTITION_ARRAY)) // Ref as I don't really need the component to re-render on each change
   const [index, setIndex] = useState(0)
+  const [question, setQuestion] = useState(null)
 
   useEffect(() => {
-    // When arriving at the end of the repartition array, shuffle a new one
+    // When arriving at the end of the repartition array (ie index 9), shuffle a new one to have a new repartition
     if (index === REPARTITION_ARRAY.length - 1) {
       answerTemplate.current = shuffleArray(REPARTITION_ARRAY)
     }
-  }, [index])
+    setQuestion(getQuestion())
+  }, [index, data, movieData])
 
   const getQuestion = () => {
     const { edges } = data?.people?.popular || {}
     if (!edges || !answerTemplate.current) return
-    const randomActorIndex = Math.floor(Math.random() * edges.length)
-    const actor = edges[randomActorIndex]?.node
 
+    // If answer is "yes", get an actor and a movie he.she played in
     if (answerTemplate.current[index]) {
-      let movie
-      let tryCount = 0
-      while (!movie && tryCount < 20) {
-        const randomActorMovieIndex = Math.floor(Math.random() * actor?.knownFor?.length)
-        const randomMovie = actor?.knownFor[randomActorMovieIndex]
+      const { actor, movie } = getActor(edges, true)
 
-        if (!!randomMovie.title) {
-          movie = randomMovie
-        } else {
-          tryCount++
-        }
+      return {
+        actor,
+        movie,
+        onAnswerYes: () => {
+          scoreVar(scoreVar() + 1)
+          setIndex((prevIndex) => (prevIndex < answerTemplate.current.length ? prevIndex + 1 : 1))
+        },
+        onAnswerNo: () => {
+          history.push(ROUTE_HIGH_SCORES)
+        },
       }
-
-      return (
-        <Question
-          actor={actor}
-          movie={movie}
-          onAnswerYes={() => {
-            scoreVar(scoreVar() + 1)
-            setIndex((prevIndex) => (prevIndex < answerTemplate.current.length ? prevIndex + 1 : 1))
-          }}
-          onAnswerNo={() => {
-            history.push(ROUTE_HIGH_SCORES)
-          }}
-        />
-      )
     } else {
+      // if answer is no, get an actor and a movie he.she hasn't played in
       const { edges: movieEdges } = movieData?.movies?.popular || {}
+      const { actor } = getActor(edges)
+      const movie = getUnrelatedMovie(movieEdges, actor)
 
-      if (!movieEdges) return
-
-      let movie
-      let tryCount = 0
-
-      while (!movie && tryCount < 20) {
-        const randomMovieIndex = Math.floor(Math.random() * movieEdges.length)
-        const randomMovie = movieEdges[randomMovieIndex]?.node
-        const index = actor?.knownFor?.findIndex(
-          (actorsMovie: Record<string, any>) => actorsMovie.id === randomMovie.id
-        )
-
-        if (index === -1) {
-          movie = randomMovie
-        } else {
-          tryCount++
-        }
+      return {
+        actor,
+        movie,
+        onAnswerYes: () => {
+          history.push(ROUTE_HIGH_SCORES)
+        },
+        onAnswerNo: () => {
+          scoreVar(scoreVar() + 1)
+          setIndex((prevIndex) => (prevIndex < answerTemplate.current.length ? prevIndex + 1 : 1))
+        },
       }
-
-      return (
-        <Question
-          actor={actor}
-          movie={movie}
-          onAnswerYes={() => {
-            history.push(ROUTE_HIGH_SCORES)
-          }}
-          onAnswerNo={() => {
-            scoreVar(scoreVar() + 1)
-            setIndex((prevIndex) => (prevIndex < answerTemplate.current.length ? prevIndex + 1 : 1))
-          }}
-        />
-      )
     }
   }
 
@@ -167,10 +247,19 @@ const Play = () => {
           <span role="img" aria-label="score">
             ✅{' '}
           </span>
-          {scoreVar()}
+          {score}
         </div>
       </SameLine>
-      {loading ? <Loader /> : getQuestion()}
+      {loading || !question ? (
+        <Loader />
+      ) : (
+        <Question
+          actor={question.actor}
+          movie={question.movie}
+          onAnswerYes={question.onAnswerYes}
+          onAnswerNo={question.onAnswerNo}
+        />
+      )}
     </StyledCard>
   )
 }

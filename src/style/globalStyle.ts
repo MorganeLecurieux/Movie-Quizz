@@ -31,6 +31,15 @@ export const GlobalStyle = createGlobalStyle`
     padding: ${spacers[2]}px ${spacers[3]}px;
     color: white;
     box-sizing: border-box;
+    cursor: pointer;
+
+    :hover {
+      opacity: 0.8;
+    }
+
+    :active {
+      filter: brightness(0.8);
+    }
   }
 
   input {
