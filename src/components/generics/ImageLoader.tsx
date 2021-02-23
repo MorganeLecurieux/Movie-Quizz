@@ -52,8 +52,4 @@ const LoaderOverlay = styled.div<{ $loading: boolean }>`
   box-sizing: border-box;
 
   transition: opacity 0.3s ease-in-out;
-  -webkit-transition: opacity 0.3s ease-in-out;
-  -moz-transition: opacity 0.3s ease-in-out;
-  -ms-transition: opacity 0.3s ease-in-out;
-  -o-transition: opacity 0.3s ease-in-out;
 `

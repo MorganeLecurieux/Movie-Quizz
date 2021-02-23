@@ -49,7 +49,7 @@ const config = {
     new HtmlWebpackPlugin({
       title: 'Music Quizz',
       template: path.join(__dirname, 'src', 'index.html'),
-      inject: true,
+      favicon: './src/public/images/favicon.svg',
     }),
   ],
   devServer: {

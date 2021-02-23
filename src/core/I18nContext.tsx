@@ -6,7 +6,7 @@ export enum LocaleEnum {
 }
 
 export const I18nContext = createContext({
-  locale: null,
+  locale: 'en',
   translate: (key: string, data?: Record<string, any>, plural?: number): string => {
     return key
   },

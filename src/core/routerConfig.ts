@@ -8,7 +8,7 @@ const Starter = lazy(() => import('@/pages/Starter'))
 const Play = lazy(() => import('@/pages/Play'))
 const HighScores = lazy(() => import('@/pages/HighScores'))
 
-import { scoreVar } from '@/core/apolloClient'
+import { scoreVar, timerVar } from '@/core/apolloClient'
 
 interface IRoute {
   path: string
@@ -26,7 +26,10 @@ export const routes: IRoute[] = [
   {
     path: ROUTE_PLAY,
     components: Play,
-    onEnter: () => scoreVar(0),
+    onEnter: () => {
+      scoreVar(0)
+      timerVar(0)
+    },
   },
   {
     path: ROUTE_HIGH_SCORES,
