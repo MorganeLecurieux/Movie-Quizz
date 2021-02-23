@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { gql, useQuery } from '@apollo/client'
 import { Card } from '@/components/generics'
 import styled from 'styled-components'
@@ -26,14 +26,24 @@ const GET_LAST_GAME_INFOS = gql`
 const HighScores = () => {
   const { data } = useQuery(GET_LAST_GAME_INFOS)
   const [userName, setUserName] = useState('')
-  const [canAddHightScore, setCanAddHightScore] = useState(true)
+  const [canAddHighScore, setCanAddHighScore] = useState(false)
   const { translate } = useI18nContext()
 
-  const getSortedHighScores = () => {
-    return [...data?.highScores].sort((a: IHighScore, b: IHighScore) => {
-      return b?.score - a?.score
+  const getSortedHighScores = (array: IHighScore[]) => {
+    if (array.length < 2) return array
+    return [...array].sort((a: IHighScore, b: IHighScore) => {
+      return b.score - a.score
     })
   }
+
+  useEffect(() => {
+    setCanAddHighScore(
+      data?.highScores.length <= 10 ||
+        data?.score > data?.highScores[data?.highScores.length - 1].score
+        ? true
+        : false
+    )
+  }, [data.score])
 
   return (
     <StyledCard>
@@ -52,7 +62,7 @@ const HighScores = () => {
       <h2>{translate('page:high-scores:title:high-scores')}</h2>
 
       {data?.highScores?.length ? (
-        getSortedHighScores().map((highScore: IHighScore, i: number) => {
+        data?.highScores?.map((highScore: IHighScore, i: number) => {
           return (
             <HighScoreLine key={i}>
               <span>{highScore.userName}</span>
@@ -71,11 +81,11 @@ const HighScores = () => {
         <div>{translate('page:high-scores:title:high-scores:none')}</div>
       )}
 
-      {data?.score > 0 && canAddHightScore && (
+      {data?.score > 0 && canAddHighScore && (
         <Form
           onSubmit={(e) => {
             e.preventDefault()
-            highScoresVar([
+            const newScores = getSortedHighScores([
               ...highScoresVar(),
               {
                 userName,
@@ -83,7 +93,9 @@ const HighScores = () => {
                 time: data?.timer,
               },
             ])
-            setCanAddHightScore(false)
+
+            highScoresVar(newScores.slice(0, 10))
+            setCanAddHighScore(false)
           }}
         >
           <input
